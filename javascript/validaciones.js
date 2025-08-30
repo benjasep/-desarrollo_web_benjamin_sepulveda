@@ -28,7 +28,7 @@ const validateEmail = (email) => {
 const validatePhoneNumber = (phoneNumber) => {
   if (!phoneNumber) return false;
   let lengthValid = phoneNumber.trim().length >= 8;
-  let re = /^\+569\d{8}$/;
+  let re = /^\+\d{3}\.\d{8}$/;
   let formatValid = re.test(phoneNumber.trim());
   return lengthValid && formatValid;
 };
