@@ -1,0 +1,117 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f8f9fa;
+  margin: 0;
+  padding: 20px;
+  color: #333;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #444;
+}
+
+a {
+  display: inline-block;
+  margin: 10px 0 20px 0;
+  padding: 8px 14px;
+  background: #2b20bd;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+}
+
+a:hover {
+  background: #d72525;
+}
+
+.main-container {
+  max-width: 650px;
+  margin: 0 auto;
+  background: white;
+  padding: 25px;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
+
+#val-box {
+  background: #ffeaea;
+  border: 1px solid #ff7b7b;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+}
+
+#val-msg {
+  margin: 0;
+  color: #b30000;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.grupo-input {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 6px;
+  font-weight: bold;
+  color: #555;
+}
+
+input, select, textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 14px;
+  transition: border 0.2s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #4CAF50;
+  outline: none;
+}
+
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+input[type="radio"], input[type="checkbox"] {
+  margin-right: 6px;
+}
+
+.botones {
+  text-align: center;
+  margin-top: 15px;
+}
+
+button {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 10px;
+  background: #2196F3;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.1s;
+}
+
+button:hover {
+  background: #1976D2;
+  transform: scale(1.02);
+}
+
+hr {
+  border: none;
+  border-top: 2px solid #ccc;
+  margin: 15px 0;
+  border-radius: 2px;
+}
