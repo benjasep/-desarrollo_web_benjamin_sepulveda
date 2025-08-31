@@ -215,7 +215,7 @@ const validateForm = () => {
     submitButton.innerText = "Enviar";
     submitButton.style.marginRight = "10px";
     submitButton.addEventListener("click", () => {
-      window.location.href = "./portada.html";
+      window.location.href = "../index.html";
       alert("Hemos recibido la informacion de adopcion, muchas gracias y suerte");
     });
 
