@@ -229,7 +229,7 @@ def formulario():
             print("-----")
             print("DEBUG1")
             print("-----")
-            '''
+            
             addAviso(comuna=comuna,
                 sector=sector,
                 nombre=username,
@@ -246,9 +246,10 @@ def formulario():
                 nombreContacto=contacto,
                 urlContacto=url_contacto,
                 fotos=validacionFotos)
+            '''
 
-            flash("Tu aviso de adopcion se registro exitosamente","exitoso")
-            return redirect(url_for('index'))
+                flash("Tu aviso de adopcion se registro exitosamente","exitoso")
+                return redirect(url_for('index'))
 
         else:
             print("-----")
