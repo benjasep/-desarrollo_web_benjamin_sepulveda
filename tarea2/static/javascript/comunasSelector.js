@@ -1,10 +1,12 @@
 
+let region_comuna = regionesSelection;
+
 const regionOption = () =>{
     let regionSelect = document.getElementById("region");
-    region_comuna.regiones.forEach(R =>{
+    region_comuna.forEach(R =>{
         let newRegion = document.createElement("option");
         newRegion.innerText = R.nombre;
-        newRegion.value = R.numero;
+        newRegion.value = R.nombre;
         regionSelect.appendChild(newRegion)
     }
 );
@@ -22,13 +24,13 @@ const crearOptionRedes = (contactoArray,selectOption) => {
 const updateComunas = () => {
   let regionSelect = document.getElementById("region");
   let comunaSelect = document.getElementById("comuna");
-  let selectedRegion = regionSelect.value -1;
+  let regionSelected = region_comuna.filter(u => u.nombre === regionSelect.value) 
   comunaSelect.innerHTML = '<option value="">Seleccione una comuna</option>';
-  if (region_comuna.regiones[selectedRegion]) {
-      region_comuna.regiones[selectedRegion].comunas.forEach(regionSelected => {
+  if (regionSelected) {
+          regionSelected[0].comunas.forEach(comuna => {
           let option = document.createElement("option");
-          option.value = regionSelected.id;
-          option.text = regionSelected.nombre;
+          option.value = comuna.nombre;
+          option.text = comuna.nombre;
           comunaSelect.appendChild(option);
       });
   }
@@ -44,7 +46,6 @@ const updateContactoText = () =>{
     } else {
         inputText.style.display = "none";
         reasonLabel.style.display = "none";
-        
     }
 };
 

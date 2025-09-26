@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title>Detalles de adopcion</title>
+    <link rel="stylesheet" type="text/css" href="../css/totalInfo.css">
+  </head>
+  <body>
+
+    {% if adopcion %}
+    <h1>Detalles de adopción</h1>
+    <ul>
+      <li>Fecha publicación:{ adopcion[1] }</li>
+      <li>Fecha entrega: { adopcion[11] }</li>
+      <li>Comuna: { adopcion[2] }</li>
+      <li>Sector: { adopcion[3] }</li>
+      <li>Cantidad Tipo edad: { adopcion[8] } { adopcion[7] } { adopcion[9] } {adopcion[10]}</li>
+      <li>Nombre contacto: { adopcion[4] }</li>
+    </ul>
+    <!--
+    <div id="foto-adopcion1" class="foto-info">
+        <img src="../img/kimba1.jpg" width="240" height="320" class="foto-detalle">
+    </div>
+
+    <div id="foto-adopcion2" class="foto-info">
+        <img src="../img/kimba2.jpg" width="240" height="320" class="foto-detalle">
+    </div>
+
+    <div id="foto-adopcion3" class="foto-info">
+        <img src="../img/kimba3.jpg" width="240" height="320" class="foto-detalle">
+    </div>
+
+    <div id="foto-adopcion4" class="foto-info">
+        <img src="../img/kimba4.jpg" width="240" height="320" class="foto-detalle">
+    </div><br>
+    
+    <div id="foto-adopcionActual" class="foto-adopcionActual" hidden>
+        <img width="600" height="800">
+        <button id="close-foto">X</button>
+    </div>-->
+    {% endif %}
+    
+    <a href="./lista.html">Volver a la lista de adopciones</a>
+    <a href="../index.html">Volver a la portada</a>
+    <script lang="javascript" src="../javascript/fotoEspecial.js"></script>
+  </body>
+</html>

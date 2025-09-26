@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title>formulario aviso de adopciones</title>
+    <link rel="stylesheet" type="text/css" href="../../static/css/forms.css">
+  </head>
+  <body>
+    <h1>formulario aviso de adopciones</h1>
+    <a href="{{ url_for('index') }}">Volver a la página principal</a>
+    <div class="main-container">
+        <div id="val-box" hidden>
+            <h2 id="val-msg"></h2>
+            <ul id="val-list"></ul>
+        </div>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, mensajes in messages %}
+      {% if category == "errorBackendInputs" %}
+        <div class="alert" id="alert-flash">
+          <h2>inputs que fallaron en el servidor:</h2>
+          <ul>
+            {% for input in mensajes %}
+              <li>{{ input }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+
+      {% elif category == "errorBackendFotos" %}
+        <div class="alert" id="alert-flash">
+          <h2>fotos que fallaron en el servidor:</h2>
+          <ul>
+            {% for input in mensajes %}
+              <li>{{ input }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+
+      {% elif category == "errorBackendInputsFotos" %}
+        <div class="alert" id="alert-flash">
+          <h2>inputs y fotos que fallaron en el servidor:</h2>
+          <ul>
+            {% for input in mensajes %}
+              <li>{{ input }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+      <form class="formulario" id="login-form" enctype="multipart/form-data" method="post">
+        <div id="region-input" class="grupo-input">
+          <label for="region">Región</label>
+          <select id="region" name="region" value="{{ regionInput }}"> 
+            <option value="{{regionInput}}" id="default-region">
+              {% if regionInput %}
+                {{ regionInput }}
+              {% else %}
+              Seleccione una región
+              {% endif %}
+            </option>
+          </select>
+        </div>
+ 
+        <div id="comuna-input" class="grupo-input">
+          <label for="comuna">Comuna</label>
+          <select id="comuna" name="comuna" value="{{comunaInput}}"> 
+            <option value="{{comunaInput}}" id="defult-comuna">
+              {% if comunaInput %}
+                {{ comunaInput }}
+              {% else %}
+              Seleccione una comuna
+              {% endif %}
+            </option>
+          </select>
+        </div>
+
+        <div id="sector-input" class="grupo-input">
+          <label for="sector">Sector</label>
+          <input id="sector" name="sector" type="text" value="{{sectorInput}}">
+        </div>
+
+        <div id="name-input" class="grupo-input">
+          <label for="username">Nombre</label>
+          <input id="username" name="username" type="text" value="{{usernameInput}}">
+        </div>
+
+        <div id="mail-input" class="grupo-input">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" value="{{emailInput}}">
+        </div>
+
+        <div id="celular-input" class="grupo-input">
+          <label for="celular">número celular</label>
+          <input id="celular" name="celular" type="tel"  placeholder="+NNN.NNNNNNNN" value="{{celularInput}}">
+        </div>
+
+        <div id="contacto-input" class="grupo-input">
+          <label for="contacto">Tipo de contacto</label>
+          <select id="contacto" name="contacto" value="{{contactoInput}}">
+            <option value="{{ contactoInput }}" id="defult-contacto">
+              {% if contactoInput %}
+                {{ contactoInput }}
+              {% else %}
+              Seleccione red social
+              {% endif %}
+            </option>
+          </select>
+
+          {% if url_contactoInput %}
+          
+          <label for="url-contacto">url o link del contacto</label>
+          <input type="text" id="url-contacto" name="url-contacto" value="{{url_contactoInput}}">
+        </div>
+          {% else %}
+          
+          <label for="url-contacto" hidden>url o link del contacto</label>
+          <input type="text" id="url-contacto" name="url-contacto" hidden >
+        </div>
+          {% endif %}
+
+        <div id="tipo-input" class="grupo-input">
+          <p>Qué animal es?</p>
+          <input type="radio" id="perro" name="animal" value="perro" {% if animalInput == "perro" %}checked{% endif %}>
+          <label for="perro">perro</label>
+          <input type="radio" id="gato" name="animal" value="gato" {% if animalInput == "gato" %}checked{% endif %}>
+          <label for="gato">gato</label>
+        </div>
+
+        <div id="cantidad-input" class="grupo-input">
+          <label for="cantidad">Cantidad</label>
+          <input id="cantidad" name="cantidad" type="number" min="1" value="{{cantidadInput}}">
+        </div>
+
+        <div id="edad-input" class="grupo-input">
+          <label for="edad">Edad</label>
+          <input id="edad" name="edad" type="number" min="1" value="{{edadInput}}">
+        </div>
+
+        <div id="medida-input" class="grupo-input">
+          <p>Meses o años?</p>
+          <input type="radio" id="meses" name="tiempo-animal" value="m" {% if meses_aniosInput == "m" %}checked{% endif %}>
+          <label for="meses">meses</label>
+          <input type="radio" id="anios" name="tiempo-animal" value="a" {% if meses_aniosInput == "a" %}checked{% endif %}>
+          <label for="anios">años</label>
+        </div>
+      <hr>
+
+        <div id="fecha-input" class="grupo-input">
+          <label for="fecha">Indique hora y fecha de entrega, los límites de tiempo para entrega:<br><br>
+          Inicio: 02-09-2025 a las 8:00 hrs<br><br>
+          Término: 02-09-2025 a las 11:00 hrs
+          </label>
+          <input id="fecha" name="fecha" type="datetime-local" value="2025-09-02T08:00:00">
+        </div>
+
+        <div id="descripcion-input" class="grupo-input">
+          <label for="descripcion">Descripción</label>
+          <textarea id="descripcion" name="descripcion" value="{{descripcionInput}}"></textarea>  
+        </div>
+
+        <div id="foto-input" class="grupo-input">
+          <p>Foto(s) (mínima 1)</p>
+          <ul>
+            <li>
+              <input id="foto1" name="foto1" type="file">
+            </li>
+            <li id="lifoto2" hidden>
+              <input id="foto2" name="foto2" type="file">
+            </li>
+            <li id="lifoto3" hidden>
+              <input id="foto3" name="foto3" type="file">
+            </li>
+            <li id="lifoto4" hidden>
+              <input id="foto4" name="foto4" type="file">
+            </li>
+            <li id="lifoto5" hidden>
+              <input id="foto5" name="foto5" type="file">
+            </li>
+          </ul>
+        </div> 
+      </form>
+      
+      {% if regionesYcomunas %}
+      <script lang="text/javascript">
+        let regionesSelection = {{ regionesYcomunas | tojson }};
+      </script>
+    <script lang="javascript" src="../../static/javascript/comunasSelector.js"></script>
+      {% endif %}
+        <div class="botones">
+          <button type="button" id="envio">
+            mandar formulario
+          </button>
+        </div>
+    </div>
+
+      <script lang="javascript" src="./../static/javascript/validaciones.js"></script>
+
+  </body>
+</html>

@@ -188,49 +188,62 @@ const validateForm = () => {
   let validationMessageElem = document.getElementById("val-msg");
   let validationListElem = document.getElementById("val-list");
   let formContainer = document.querySelector(".main-container");
+  let alerta = document.getElementById("alert-flash");
+  let botonForm = document.getElementById("envio");
+  botonForm.style.display= 'none'
+  if (alerta){
+    alerta.style.display= 'none'
+  }
 
-  if (!isValid) {
-    validationListElem.textContent = "";
-    for (let input of invalidInputs) {
-      let listElement = document.createElement("li");
-      listElement.innerText = input;
-      validationListElem.append(listElement);
+    if (!isValid) {
+      botonForm.style.display= 'block'
+      if (alerta){
+        alerta.style.display= 'block'
+      }
+      validationListElem.textContent = "";
+      for (let input of invalidInputs) {
+        let listElement = document.createElement("li");
+        listElement.innerText = input;
+        validationListElem.append(listElement);
+      };
+      validationMessageElem.innerText = "Los siguientes campos son inválidos:";
+
+      validationBox.style.backgroundColor = "#ffdddd";
+      validationBox.style.borderLeftColor = "#f44336";
+
+      validationBox.hidden = false;
+    } else {
+      myForm.style.display = "none";
+
+      validationMessageElem.innerText = "¡Formulario válido! ¿Deseas enviarlo o volver?";
+      validationListElem.textContent = "";
+
+      validationBox.style.backgroundColor = "#ddffdd";
+      validationBox.style.borderLeftColor = "#4CAF50";
+
+      let submitButton = document.createElement("button");
+      submitButton.innerText = "Enviar";
+      submitButton.style.marginRight = "10px";
+      submitButton.addEventListener("click", () => {
+        myForm.submit();
+        //alert("Hemos recibido la informacion de adopcion, muchas gracias y suerte");
+      });
+
+      let backButton = document.createElement("button");
+      backButton.innerText = "Volver al formulario";
+      backButton.addEventListener("click", () => {
+        submitBtn.style.display = 'block'
+        myForm.style.display = "block";
+        validationBox.hidden = true;
+      });
+      validationListElem.appendChild(submitButton);
+      validationListElem.appendChild(backButton);
+      validationBox.hidden = false;
     };
-    validationMessageElem.innerText = "Los siguientes campos son inválidos:";
-
-    validationBox.style.backgroundColor = "#ffdddd";
-    validationBox.style.borderLeftColor = "#f44336";
-
-    validationBox.hidden = false;
-  } else {
-    myForm.style.display = "none";
-
-    validationMessageElem.innerText = "¡Formulario válido! ¿Deseas enviarlo o volver?";
-    validationListElem.textContent = "";
-
-    validationBox.style.backgroundColor = "#ddffdd";
-    validationBox.style.borderLeftColor = "#4CAF50";
-
-    let submitButton = document.createElement("button");
-    submitButton.innerText = "Enviar";
-    submitButton.style.marginRight = "10px";
-    submitButton.addEventListener("click", () => {
-      window.location.href = "../index.html";
-      alert("Hemos recibido la informacion de adopcion, muchas gracias y suerte");
-    });
-
-    let backButton = document.createElement("button");
-    backButton.innerText = "Volver al formulario";
-    backButton.addEventListener("click", () => {
-      myForm.style.display = "block";
-      validationBox.hidden = true;
-    });
-    validationListElem.appendChild(submitButton);
-    validationListElem.appendChild(backButton);
-    validationBox.hidden = false;
-  };
 };
 
 
 let submitBtn = document.getElementById("envio");
-submitBtn.addEventListener("click", validateForm);
+submitBtn.addEventListener("click", () => {
+  validateForm();
+});

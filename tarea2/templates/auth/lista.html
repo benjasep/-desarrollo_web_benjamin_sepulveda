@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+  <title>Todas las adopciones actuales</title>
+    <link rel="stylesheet" type="text/css" href="../css/lista.css">
+  </head>
+  <h1>Lista de adopciones</h1>
+  <body>
+    <a href="{{ url_for('index') }}">Volver a la portada</a>
+    {% if avisos %}
+    <table>
+      <tr>
+    <th>Fecha publicación</th>
+    <th>Fecha entrega</th>
+    <th>Comuna</th>
+    <th>Sector</th>
+    <th>Cantidad Tipo edad</th>
+    <th>Nombre Contacto</th>
+    <th>total fotos</th>
+    <th>información Completa</th>
+      </tr>
+      {% for a in avisos %}
+      <tr>
+    <th>{{ a[1] }}</th>
+    <th>{{ a[11] }}</th>
+    <th>{{ a[2] }}</th>
+    <th>{{ a[3] }}</th>
+    <th>{{ a[8] }} {{ a[7] }} {{ a[9] }}</th>
+    <th>{{ a[4] }}</th>
+    <th>total fotos</th>
+    <!--<th> aqui debemos poner el redirect para el id del aviso</th>-->
+      </tr>
+      {% endfor %}
+    </table>
+
+    {% else %}
+    <p>No hay adopciones actualmente</p>
+    {% endif %}
+<!--
+    {% if actual == 1 %}
+    <p>pagina actual: 1</p>
+    {% else %}
+    <p>pagina actual: {actual}</p>
+    <a href="{{redirect()}}">siguiente pagina</a>
+    {% endif %}-->
+    {% if pages %}
+
+    <p>pagina actual: {{ actual }}</p>
+    
+    {% if actual != 1 %}
+    <a href="">pagina anterior</a>
+    {% endif%}
+
+    {% if actual != p[-1]%}
+    <a href="{}">siguiente pagina</a>
+    {% endif %}
+
+    <nav>
+    {% for p in pages%}
+    <a href="">{{p}}</a>
+    {% endfor %}
+    </nav>
+    {% endif%}
+
+  </body>
+</html>

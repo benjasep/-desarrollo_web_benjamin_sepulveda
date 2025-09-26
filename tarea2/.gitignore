@@ -1,0 +1,10 @@
+# Entorno Virtual
+
+venv/
+.env
+
+# Archivos temporales
+*.pyc
+__pycache__/
+
+

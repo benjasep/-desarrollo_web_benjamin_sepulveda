@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title>Portada de página</title>
+    <link rel="stylesheet" type="text/css" href="../../static/css/index.css">
+  </head>
+  <h1>Inicio de adopciones</h1>
+  <body>
+    <a href="{{ url_for('estadisticas') }}">Estadísticas</a>
+    <a href="{{ url_for('listadoAdopciones', page='1') }}">Ver Listado de adopciones</a>
+    <a href="{{ url_for('formulario') }}">Agregar aviso de adopción</a>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert {{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+    {% for a in adopciones if adopciones %}
+    <table>
+  <tr>
+    <th>Fecha publicación</th>
+    <th>Comuna</th>
+    <th>Sector</th>
+    <th>Cantidad Tipo edad</th>
+    <th>Foto</th>
+  </tr>
+  <tr>
+    <th>{{ a[1] }}</th>
+    <th>{{ a[2] }}</th>
+    <th>{{ a[3] }}</th>
+    <th>{{ a[8] }}</th>
+    <th>{{ a[7] }}</th>
+    <th>{{ a[9] }}</th>
+    <th>Foto</th>
+  </tr>
+    {% endfor %}
+
+    {% if not adopciones %}
+    <div id="no-adopciones">
+      <h2>No hay avisos de adopciones actualmente</h2>  
+    </div>
+    {% endif %}
+    <script lang="javascript" src=""></script>
+  </body>
+</html>
