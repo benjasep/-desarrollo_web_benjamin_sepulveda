@@ -6,16 +6,33 @@
   </head>
   <body>
 
-    {% if adopcion %}
     <h1>Detalles de adopción</h1>
     <ul>
-      <li>Fecha publicación:{ adopcion[1] }</li>
-      <li>Fecha entrega: { adopcion[11] }</li>
-      <li>Comuna: { adopcion[2] }</li>
-      <li>Sector: { adopcion[3] }</li>
-      <li>Cantidad Tipo edad: { adopcion[8] } { adopcion[7] } { adopcion[9] } {adopcion[10]}</li>
-      <li>Nombre contacto: { adopcion[4] }</li>
+      <li>Fecha publicación:{{ adopcion[1] }}</li>
+      <li>Fecha entrega: {{ adopcion[11] }}</li>
+      <li>Comuna: {{ adopcion[2] }}</li>
+      <li>Sector: {{ adopcion[3] }}</li>
+      <li>Cantidad Tipo<br></br> edad:
+         {{ adopcion[8] }} {{ adopcion[8] }}
+         {{ adopcion[8] }} {{ adopcion[8] }}
+      </li>
+      <li>Nombre contacto: {{ adopcion[4] }}</li>
     </ul>
+
+    <div id="fotos-detalles-div">
+    {% for f in fotos %}
+
+    <div class="foto-info">
+        <img src="/{{ f.ruta_archivo }}" width="240" height="320" class="foto-detalle">
+    </div>
+
+    {% endfor %}
+    </div>
+
+    <div id="foto-adopcionActual" class="foto-adopcionActual" hidden>
+        <img width="600" height="800">
+        <button id="close-foto">X</button>
+    </div>
     <!--
     <div id="foto-adopcion1" class="foto-info">
         <img src="../img/kimba1.jpg" width="240" height="320" class="foto-detalle">
@@ -37,10 +54,9 @@
         <img width="600" height="800">
         <button id="close-foto">X</button>
     </div>-->
-    {% endif %}
     
     <a href="./lista.html">Volver a la lista de adopciones</a>
     <a href="../index.html">Volver a la portada</a>
-    <script lang="javascript" src="../javascript/fotoEspecial.js"></script>
+    <script lang="javascript" src="../static/javascript/fotoEspecial.js"></script>
   </body>
 </html>

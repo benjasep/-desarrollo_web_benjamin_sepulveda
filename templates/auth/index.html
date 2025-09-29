@@ -18,26 +18,31 @@
   {% endif %}
 {% endwith %}
 
-    {% for a in adopciones if adopciones %}
+    {% if adopciones %}
     <table>
   <tr>
     <th>Fecha publicación</th>
     <th>Comuna</th>
     <th>Sector</th>
-    <th>Cantidad Tipo edad</th>
+    <th>Cantidad Tipo <br></br>edad</th>
     <th>Foto</th>
   </tr>
-  <tr>
-    <th>{{ a[1] }}</th>
-    <th>{{ a[2] }}</th>
-    <th>{{ a[3] }}</th>
-    <th>{{ a[8] }}</th>
-    <th>{{ a[7] }}</th>
-    <th>{{ a[9] }}</th>
-    <th>Foto</th>
+    {% for adop in adopciones %}
+    <tr>
+    <th>{{ adop.fecha_ingreso }}</th>
+    <th>{{ adop.comuna_id }}</th>
+    <th>{{ adop.sector }}</th>
+    <th>{{ adop.cantidad }} {{ adop.tipo }} 
+      <br></br>{{ adop.edad }} {{ adop.unidad_medida}}
+    </th>
+    <th>
+      <img src="{{ adop.fotos[0].ruta_archivo }}" width="150" height="150">
+    </th>
   </tr>
     {% endfor %}
-
+    </table>
+    {% endif %}
+    <!---->
     {% if not adopciones %}
     <div id="no-adopciones">
       <h2>No hay avisos de adopciones actualmente</h2>  

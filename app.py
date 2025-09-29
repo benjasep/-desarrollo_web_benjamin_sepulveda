@@ -3,6 +3,7 @@ from markupsafe import escape
 from werkzeug.utils import secure_filename
 from database import bd_ORM
 from utils import validaciones
+from datetime import datetime
 import hashlib
 import filetype
 import os
@@ -19,34 +20,68 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/') # GET
 def index():
-    avisos = []
-    avisos = bd_ORM.getFirst5Avisos()
-    for i in avisos:
-        id_comuna = i[2]
-        comuna = bd_ORM.getComunaById(id_comuna)
-        i[2] = comuna  
+    avisos = bd_ORM.getFirst5Avisos(5,0)
+
+    for j in avisos:
+        comunaName = bd_ORM.getNameComunaById(j.comuna_id) 
+        j.comuna_id = comunaName
+
+        if j.unidad_medida == "m":
+            j.unidad_medida = "meses"
+
+        if j.unidad_medida == "a":
+            j.unidad_medida = "años"
 
     renderizado = render_template("auth/index.html", adopciones=avisos)
     return renderizado
 
 
-@app.route('/listadoAdopciones/<int:page>')
-def listadoAdopciones(page):
-    #page = request.args.get(page, 1)
-    #adopcionesAll = getAllAvisos()
-    #adopcionesPage = (adopcionesAll[page*5:])[:5] # las primeras 5 de esa pagina
+@app.route('/listadoAdopciones')
+def listadoAdopciones():
+    actualPage = request.args.get("page", 1, type=int)
+    avisos = bd_ORM.getFirst5Avisos(5, actualPage*5)
 
-    return render_template("/auth/lista.html", avisos=[], actual=1)
+    for j in avisos:
+        comunaName = bd_ORM.getNameComunaById(j.comuna_id) 
+        j.comuna_id = comunaName
+        if j.unidad_medida == "m":
+            j.unidad_medida = "meses"
 
-'''
-@app.route('/adopcion/<int:page>')
-def listadoAdopciones(page):
-    #page = request.args.get(page, 1)
-    #adopcionesAll = getAllAvisos()
-    #adopcionesPage = (adopcionesAll[page*5:])[:5] # las primeras 5 de esa pagina
+        if j.unidad_medida == "a":
+            j.unidad_medida = "años"
 
-    return render_template("/auth/lista.html")
-'''
+    avisosAll = bd_ORM.getAllAvisos()
+    largePaginas = (len(avisosAll) // 5) if len(avisosAll) % 5 != 0 else (len(avisosAll) // 5) - 1
+    anteriores = list(range(1, actualPage))
+    siguientes = list(range(actualPage+1, largePaginas +1 ))
+
+    if len(anteriores) > 5:
+        anterioresInversos = anteriores[-5:]
+        anterioresLimitados = anterioresInversos[::]
+        anterioresLimitados[0] = 1 
+    elif len(anteriores) >= 1:
+        anterioresLimitados = anteriores[:5]
+    else:
+        anterioresLimitados = anteriores
+
+    siguientesLimitados = siguientes[:5]
+    return render_template("/auth/lista.html",
+    avisos=avisos, page=actualPage, anteriores=anterioresLimitados,
+    siguientes=siguientesLimitados)
+
+@app.route('/detallesAdopcion')
+def detallesAdopcion():
+    lastPage = request.args.get("page", 1, type=int)
+    idDetalle = request.args.get("detalle", type=int)
+    contactoDetalle = bd_ORM.getContactoByIdAviso(idDetalle)
+    fotosDetalle = bd_ORM.getFotosByIdAviso(idDetalle)
+    infoAviso = bd_ORM.getAvisoById(idDetalle)
+
+    return render_template("auth/infoplantilla.html",
+    adopcion=infoAviso,
+    contacto=contactoDetalle,
+    fotos=fotosDetalle
+    )
 
 @app.route('/estadisticas')
 def estadisticas():
@@ -56,31 +91,25 @@ def estadisticas():
 def formulario():
     if request.method == "GET": 
         regionesJSON = bd_ORM.getAllRegionesYComunasJSON()
-        #print(regionesJSON[0])
-        #comunas = bd_ORM.getAllComunas()
         return render_template("auth/formulario.html", regionesYcomunas = regionesJSON)
 
     elif request.method == "POST":
-        #file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        #tiporeal = filetype.guess(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
+        # validamos
         def validateFoto(file):
             ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
             ALLOWED_MIMETYPES = {"image/jpeg", "image/png", "image/gif"}
 
-            # check if a file was submitted
             if file is None:
                 return False
 
-            # check if the browser submitted an empty file
             if file.filename == "":
                 return False
             
-            # check file extension
             ftype_guess = filetype.guess(file)
             if ftype_guess.extension not in ALLOWED_EXTENSIONS:
                 return False
-            # check mimetype
+
             if ftype_guess.mime not in ALLOWED_MIMETYPES:
                 return False
             return True
@@ -105,168 +134,82 @@ def formulario():
         foto3 = request.files.get("foto3")
         foto4 = request.files.get("foto4")
         foto5 = request.files.get("foto5")
-        
+        fotosBool = True
+
         # inputs que si contienen fotos
         fotos = []
-        for i in [foto1,foto2,foto3,foto4,foto5]:
-            if i:
-                fotos.append(i)
-        # validacion de todo los inputs que no sean la foto
+        validacionFotos= []
 
+        # revisamos las validaciones de las fotos
+        for i in [foto1,foto2,foto3,foto4,foto5]:
+            if validateFoto(i):
+                fotos.append(i)
+
+            # falla la validacion total si una sola imagen no vacia falla
+            elif not validateFoto(i) and i is not None and i.filename != "" : # fotos que estan malas
+                fotosBool = False
+        
+        # guardamos los archivos que fallan
+        if not fotosBool:
+            for j in [foto1,foto2,foto3,foto4,foto5]:
+                    if not validateFoto(j) and j.filename != "":
+                        validacionFotos.append(j)
+
+        # el otro caso donde no hay fotos realmente
+        if not fotos and fotosBool:
+            fotosBool = False
+            validacionFotos = ["no hay fotos"]
+
+        # validacion de todo los inputs que no sean la foto
         validacionTotal = validaciones.validateAll(region, comuna, sector, username, email, celular,
         contacto, url_contacto, animal, cantidad, edad, meses_anios,
         fecha, descripcion)
 
-        '''
-        print("region: ")
-        print(region)
-        print("--------")
-        print("")
-        
-        print("comuna: ")
-        print(comuna)
-        print("--------")
-        print("")
-        
-        print("sector: ")
-        print(sector)
-        print("--------")
-        print("")
-        
-        print("username: ")
-        print(username)
-        print("--------")
-        print("")
-        
-        print("email: ")
-        print(email)
-        print("--------")
-        print("")
-        
-        print("celular: ")
-        print(celular)
-        print("--------")
-        print("")
-        
-        print("contacto: ")
-        print(contacto)
-        print("--------")
-        print("")
-        
-        print("url_contacto: ")
-        print(url_contacto)
-        print("--------")
-        print("")
-        
-        print("animal: ")
-        print(animal)
-        print("--------")
-        print("")
-        
-        print("cantidad: ")
-        print(cantidad)
-        print("--------")
-        print("")
-        
-        print("edad: ")
-        print(edad)
-        print("--------")
-        print("")
-        
-        print("meses anios: ")
-        print(meses_anios)
-        print("--------")
-        print("")
-        
-        print("fecha: ")
-        print(fecha)
-        print("--------")
-        print("")
-        
-        print("descripcion: ")
-        print(descripcion)
-        print("--------")
-        print("")
+        # si ambas validaciones cumplen
+        if  fotosBool and not validacionTotal:
 
-        return "Datos recibidos correctamente", 200
-        '''
-        # validamos las validas
-
-        validacionFotos = []
-
-        if bool(foto1) or bool(foto2) or bool(foto3) or bool(foto4) or bool(foto5):            
-            for j in fotos:
-                if not validateFoto(j):
-                    validacionFotos.append(j.filename)
-        else:
-            validacionFotos = ["no hay fotos"]
-
-        if not validacionFotos and not validacionTotal:
             # agregamos el input a la bd
+            idComuna = bd_ORM.getIdComunaByName(comuna)
 
+            #tiempo default
+            fechaDatetime = datetime.strptime(fecha, "%Y-%m-%dT%H:%M")
 
-                #if validacionFotos(conf_text, conf_img):
-                '''
-                    # 1. generate random name for img
-                    _filename = hashlib.sha256(
-                        secure_filename(conf_img.filename) # nombre del archivo
-                        .encode("utf-8") # encodear a bytes
-                        ).hexdigest()
-                    _extension = filetype.guess(conf_img).extension
-                    img_filename = f"{_filename}.{_extension}"
-
-                    # 2. save img as a file
-                    conf_img.save(os.path.join(app.config["UPLOAD_FOLDER"], img_filename))
-
-                    # 3. save confession in db
-                    user = db.get_user_by_username(username)
-                    db.create_confession(conf_text, img_filename, user.id)
-                    
-                        
-            #bd_ORM.addAviso(comuna,sector,username,email,celular,animal,cantidad,edad,meses_anios,fecha,descripcion
-            #contacto,url_contacto,fotoadd)
-            
-            print("-----")
-            print("DEBUG1")
-            print("-----")
-            
-            addAviso(comuna=comuna,
-                sector=sector,
-                nombre=username,
-                email=email,
-                celular=celular,
-                tipo=animal,
-                cantidad=cantidad,
-                edad=edad,
-                unidad_medida=meses_anios,
-                fecha_entrega=fecha,
-                descripcion=descripcion,
-                ## entidad contactar_por
+            agregacion = bd_ORM.addAviso(
+                    comuna=idComuna,
+                    sector=sector,
+                    nombre=username,
+                    email=email,
+                    celular=celular,
+                    tipo=animal,
+                    cantidad=cantidad,
+                    edad=edad,
+                    unidad_medida=meses_anios,
+                    fecha_entrega=fechaDatetime,
+                    descripcion=descripcion,
+                    nombreContacto=contacto,
+                    urlContacto=url_contacto,
+                    fotos=fotos,
+                    appVAR=app)
                 
-                nombreContacto=contacto,
-                urlContacto=url_contacto,
-                fotos=validacionFotos)
-            '''
-
+            if agregacion:
                 flash("Tu aviso de adopcion se registro exitosamente","exitoso")
                 return redirect(url_for('index'))
+            else:
+                flash("ocurrió un error con el form y el servidor","error")    
+                return redirect(url_for('index'))
 
+        # en caso de que  haya fallado las validaciones
         else:
-            print("-----")
-            print("DEBUG2")
-            print("-----")
-
-            print(validacionTotal)                                  
-            if (validacionTotal and validacionFotos):
+            if (validacionTotal and not fotosBool):
                 print("fallo inputs e imagenes")
                 validacionTotal = validacionTotal + validacionFotos  
                 flash(validacionTotal, "errorBackendInputsFotos")
-            elif validacionFotos:
+            elif not fotosBool:
                 print("fallo imagenes")
                 flash(validacionFotos, "errorBackendFotos")
             else:
                 print("fallo en el input")
-                flash("validacionTotal", "errorBackendInputs")
+                flash(validacionTotal, "errorBackendInputs")
 
             regionesComunas = bd_ORM.getAllRegionesYComunasJSON()
             return render_template('auth/formulario.html', regionesYcomunas=regionesComunas,
@@ -283,9 +226,79 @@ def formulario():
             edadInput=edad,
             meses_aniosInput=meses_anios,
             fechaInput=fecha,
-            descripcionInput=descripcion
-            )
+            descripcionInput=descripcion)
 
 if __name__ == "__main__":
     app.run(debug=True)
 
+'''
+    print("region: ")
+    print(region)
+    print("--------")
+    print("")
+        
+    print("comuna: ")
+    print(comuna)
+    print("--------")
+    print("")
+        
+    print("sector: ")
+    print(sector)
+    print("--------")
+    print("")
+        
+    print("username: ")
+    print(username)
+    print("--------")
+    print("")
+        
+    print("email: ")
+    print(email)
+    print("--------")
+    print("")
+        
+    print("celular: ")
+    print(celular)
+    print("--------")
+    print("")
+        
+    print("contacto: ")
+    print(contacto)
+    print("--------")
+    print("")
+        
+    print("url_contacto: ")
+    print(url_contacto)
+    print("--------")
+    print("")
+        
+    print("animal: ")
+    print(animal)
+    print("--------")
+    print("")
+        
+    print("cantidad: ")
+    print(cantidad)
+    print("--------")
+    print("")
+        
+    print("edad: ")
+    print(edad)
+    print("--------")
+    print("")
+        
+    print("meses anios: ")
+    print(meses_anios)
+    print("--------")
+    print("")
+        
+    print("fecha: ")
+    print(fecha)
+    print("--------")
+    print("")
+        
+    print("descripcion: ")
+    print(descripcion)
+    print("--------")
+    print("")
+'''

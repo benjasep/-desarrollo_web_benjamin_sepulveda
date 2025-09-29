@@ -2,7 +2,7 @@
 <html lang="es">
   <head>
   <title>Todas las adopciones actuales</title>
-    <link rel="stylesheet" type="text/css" href="../css/lista.css">
+    <link rel="stylesheet" type="text/css" href="../../static/css/lista.css">
   </head>
   <h1>Lista de adopciones</h1>
   <body>
@@ -16,18 +16,23 @@
     <th>Sector</th>
     <th>Cantidad Tipo edad</th>
     <th>Nombre Contacto</th>
-    <th>total fotos</th>
+    <th>foto</th>
     <th>información Completa</th>
       </tr>
-      {% for a in avisos %}
+      {% for adopt in avisos %}
       <tr>
-    <th>{{ a[1] }}</th>
-    <th>{{ a[11] }}</th>
-    <th>{{ a[2] }}</th>
-    <th>{{ a[3] }}</th>
-    <th>{{ a[8] }} {{ a[7] }} {{ a[9] }}</th>
-    <th>{{ a[4] }}</th>
-    <th>total fotos</th>
+    <th>{{ adopt.fecha_ingreso }}</th>
+    <th>{{ adopt.fecha_entrega }}</th>
+    <th>{{ adopt.comuna_id }}</th>
+    <th>{{ adopt.sector }}</th>
+    <th>{{ adopt.cantidad }} {{ adopt.tipo }} {{ adopt.edad }}</th>
+    <th>{{ adopt.nombre }}</th>
+    <th>
+      <img src="/{{ adopt.fotos[0].ruta_archivo }}" width="150" height="150">
+    </th>
+    <th>
+      <a href="{{url_for('detallesAdopcion', page=page, detalle=adopt.id)}}"> información completa </a>
+    </th>
     <!--<th> aqui debemos poner el redirect para el id del aviso</th>-->
       </tr>
       {% endfor %}
@@ -36,31 +41,37 @@
     {% else %}
     <p>No hay adopciones actualmente</p>
     {% endif %}
-<!--
-    {% if actual == 1 %}
-    <p>pagina actual: 1</p>
-    {% else %}
-    <p>pagina actual: {actual}</p>
-    <a href="{{redirect()}}">siguiente pagina</a>
-    {% endif %}-->
-    {% if pages %}
 
-    <p>pagina actual: {{ actual }}</p>
-    
-    {% if actual != 1 %}
-    <a href="">pagina anterior</a>
-    {% endif%}
+    <div class="paginacion">
+      <div class="retroceso">
+      {% if anteriores %}
+      <a href="{{ url_for('listadoAdopciones', page=anteriores[-1:]) }}">ir a la lista anterior</a>
+      {% for a in anteriores %}
 
-    {% if actual != p[-1]%}
-    <a href="{}">siguiente pagina</a>
-    {% endif %}
+      <span>
+        <a href="{{url_for('listadoAdopciones', page=a ) }}">{{ a }}</a>
+      <span>
 
-    <nav>
-    {% for p in pages%}
-    <a href="">{{p}}</a>
-    {% endfor %}
-    </nav>
-    {% endif%}
+      {% endfor %}
+      {% endif %}
+        </div>
+
+      {% if page %}
+      pagina actual: {{ page }}
+      {% endif %}
+        <div class="avance">
+      {% if siguientes %}
+        <a href="{{ url_for('listadoAdopciones',page=siguientes[0]) }}">ir a la siguiente lista</a>
+      {% for sig in siguientes %}
+
+      <span>
+        <a href="{{ url_for('listadoAdopciones', page=sig) }}">{{ sig }}</a>
+      <span>
+
+      {% endfor %}
+      {% endif %}
+      </div>
+    </div>
 
   </body>
 </html>

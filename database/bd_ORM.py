@@ -1,6 +1,12 @@
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, sessionmaker
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, sessionmaker, joinedload
 from sqlalchemy import String, Integer, ForeignKey, Enum, DateTime, text, create_engine, Select
+from markupsafe import escape
+from werkzeug.utils import secure_filename
 import datetime
+import hashlib
+import filetype
+import os
+
 
 
 UPLOAD_FOLDER = 'static/uploads'
@@ -105,39 +111,25 @@ DATABASE_URL = f"mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}
 engine = create_engine(DATABASE_URL, echo=False, future=True)
 SessionLocal = sessionmaker(bind=engine)
 
-'''
-def get_session():
-    engine = create_engine(f"mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset={DB_CHARSET}", echo=True)
-    session = Session(engine)
-    return session
-'''
-
-
 
 # -- query --
-'''
 def getAllAvisos():
-    session = SessionLocal()
-    avisos = session.query(select(Aviso_adopcion)).all()
-    session.close()
-    return avisos 
-'''
-
-def getFirst5Avisos():
     sesion = SessionLocal()
-    avisos = sesion.query(Aviso_adopcion).limit(5).all()
+    avisos = sesion.query(Aviso_adopcion).options(joinedload(Aviso_adopcion.fotos)).all()
     sesion.close()
     return avisos
 
-'''    
-def getAvisobyId(idAviso):
-    session = SessionLocal()
-    cursor = session.cursor()
-    stmt = select(Aviso_adopcion).where(Aviso_adopcion.id == idAviso)
-    aviso = sesion.scalars(stmt)
-    session.close()
+def getFirst5Avisos(limitN, offsetN):
+    sesion = SessionLocal()
+    avisos = sesion.query(Aviso_adopcion).options(joinedload(Aviso_adopcion.fotos)).offset(offsetN).limit(limitN).all()
+    sesion.close()
+    return avisos
+
+def getAvisoById(id):
+    sesion = SessionLocal()
+    aviso = sesion.query(Aviso_adopcion).filter_by(id=id).first()
+    sesion.close()
     return aviso
-'''   
 
 def getAllRegionesYComunasJSON():
     sesion = SessionLocal()
@@ -176,51 +168,73 @@ def getAllComunas():
 
 def getIdComunaByName(comuna):
     sesion = SessionLocal()
-    comuna = sesion.query(Comuna).filter_by(nombre == comuna).first()
+    comuna = sesion.query(Comuna).filter_by(nombre=comuna).first()
     sesion.close()
     return comuna.id
 
-def addAviso(comuna,
-            sector,
-            nombre,
-            email,
-            celular,
-            tipo,
-            cantidad,
-            edad,
-            unidad_medida,
-            fecha_entrega,
-            descripcion,
-            ## entidad contactar_por
-            
-            nombreContacto,
-            urlContacto,
+def getNameComunaById(id):
+    sesion = SessionLocal()
+    comuna = sesion.query(Comuna).filter_by(id=id).first()
+    sesion.close()
+    return comuna.nombre 
 
-            ## foto (lista de fotos)
-            fotos):
-            
+def getOneImageByAvisoId(AvisoId):
+    sesion = SessionLocal()
+    imagen = sesion.query(Foto).filter_by(aviso_id=AvisoId).first()
+    sesion.close()
+    return imagen
+
+def getAllImagesByAvisoId(AvisoId):
+    sesion = SessionLocal()
+    imagen = sesion.query(Foto).filter_by(aviso_id=AvisoId).all()
+    sesion.close()
+    return imagen
+
+def getContactoByIdAviso(avisoId):
+    sesion = SessionLocal()
+    contacto = sesion.query(Contactar_por).filter_by(aviso_id=avisoId).first()
+    sesion.close()
+    return contacto
+
+def getFotosByIdAviso(avisoId):
+    sesion = SessionLocal()
+    fotos = sesion.query(Foto).filter_by(aviso_id=avisoId).all()
+    sesion.close()
+    return fotos 
+
+def addAviso(comuna,sector,nombre,email,
+    celular,tipo,cantidad,edad,unidad_medida,
+    fecha_entrega,descripcion,nombreContacto,
+    urlContacto,fotos, appVAR):
+
+    sesion = SessionLocal()
+
     try:
         aviso = Aviso_adopcion(
-            comuna,
-            sector,
-            nombre,
-            email,
-            celular,
-            tipo,
-            cantidad,
-            edad,
-            unidad_medida,
-            fecha_entrega,
-            descripcion
+            fecha_ingreso=datetime.datetime.now(),
+            comuna_id=int(comuna),
+            sector=sector,
+            nombre=nombre,
+            email=email,
+            celular=celular,
+            tipo=tipo,
+            cantidad=int(cantidad),
+            edad=int(edad),
+            unidad_medida=unidad_medida,
+            fecha_entrega=fecha_entrega,
+            descripcion=descripcion
         )
+        sesion.add(aviso)
+        sesion.flush()
 
         contacto = Contactar_por(
-            nombreContacto,
-            urlContacto,
-            aviso.id
+            nombre=nombreContacto,
+            identificador=urlContacto,
+            aviso_id=aviso.id
         )
-
-        for i in foto:
+        sesion.add(contacto)
+        listfotos=[]
+        for i in fotos:
             _filename = hashlib.sha256(
             secure_filename(i.filename) # nombre del archivo
             .encode("utf-8") # encodear a bytes
@@ -228,90 +242,24 @@ def addAviso(comuna,
             _extension = filetype.guess(i).extension
             img_filename = f"{_filename}.{_extension}"
 
-                    # 2. save img as a file
-            i.save(os.path.join(app.config["UPLOAD_FOLDER"], img_filename))
+            i.save(os.path.join(appVAR.config["UPLOAD_FOLDER"], img_filename))
+            ruta=os.path.join(appVAR.config["UPLOAD_FOLDER"], img_filename)
 
             foto = Foto(
-                os.path.join(app.config["UPLOAD_FOLDER"], img_filename,
-                img_filename,
-                aviso.id)
-            )
+                ruta_archivo=ruta,
+                nombre_archivo=img_filename,
+                aviso_id=aviso.id)
 
+            listfotos.append(foto)
+        
+        for j in listfotos:
+            sesion.add(j)
+        sesion.commit()
         sesion.close()
         return True
     except Exception as e: #se supone que aqui nunca deberian 
+        print(type(e))
+        print(e)
         sesion.rollback() # haber errores
         sesion.close()
         return False
-
-'''
-def addContacto():
-    return'''
-
-'''
-def addAviso(fecha_ingreso, comuna_id, sector, nombre,
-    email, celular, tipo, cantidad,edad,
-    unidad_medida,fecha_entrega,descripcion):
-    session = get_session()
-    cursor = session.cursor()
-    aviso = Aviso_adopcion(
-        fecha_ingreso=fecha_ingreso,
-        comuna_id=comuna_id
-        sector=sector
-        nombre=nombre
-        email=email
-        celular=celular
-        tipo=tipo
-        cantidad=cantidad
-        edad=edad
-        unidad_medida=unidad_medida
-        fecha_entrega=fecha_entrega
-        descripcion=descripcion
-    )
-    try:
-        session.add(aviso)
-        session.commit()
-        return True
-    except Exception as e:
-        session.rollback()
-        return False
-            
-
-def addFoto(id, ruta_archivo, nombre_archivo, aviso_id):
-    session = get_session()
-    cursor = session.cursor()
-    foto = Foto(
-        ruta_archivo=ruta_archivo,
-        nombre_archivo=nombre_archivo,
-        aviso_id= aviso_id
-    )
-    try:
-        session.add(foto)
-        session.commit()
-        return True
-    except Exception as e:
-        session.rollback()
-        return False
-
-def addContacto(nombre, identificador, actividad_id):
-    session = get_session()
-    cursor = session.cursor()
-    contacto = Contactar_por(
-        nombre = nombre,
-        identificador = identificador,
-        actividad_id = actividad_id
-    )
-    try:
-        session.add(contacto)
-        session.commit()
-        return True
-    except Exception as e:
-        session.rollback()
-        return False
-    
-
-def addAllAvisoCompleto():
-    session = get_session()
-    cursor = session.cursor()
-    # aqui deben hacerse las validaciones para las adopciones, fotos y contacto
-'''

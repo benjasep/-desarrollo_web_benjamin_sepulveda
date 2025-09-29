@@ -1,10 +1,3 @@
-let divFoto = document.getElementById('foto-adopcionActual');
-
-let divFoto1 = document.getElementById('foto-adopcion1');
-let divFoto2 = document.getElementById('foto-adopcion2');
-let divFoto3 = document.getElementById('foto-adopcion3');
-let divFoto4 = document.getElementById('foto-adopcion4');
-
 const mostrarDiv = (divFoto) =>{
     let divEspecial = document.getElementById('foto-adopcionActual');
     let fotoEspecial = divEspecial.querySelector("img");
@@ -14,13 +7,18 @@ const mostrarDiv = (divFoto) =>{
 }
 
 window.onload = () => {
-    let divFoto1 = document.getElementById('foto-adopcion1');
-    let divFoto2 = document.getElementById('foto-adopcion2');
-    let divFoto3 = document.getElementById('foto-adopcion3');
-    let divFoto4 = document.getElementById('foto-adopcion4');
+    let divAllImg = document.getElementById('fotos-detalles-div').querySelectorAll('div');
+    
     let divFoto = document.getElementById('foto-adopcionActual');
     let boton_cerrado = document.getElementById('close-foto');
 
+    for(let i of divAllImg){
+        i.addEventListener("click", () => {
+        mostrarDiv(i);
+    })
+    }
+
+    /*
     divFoto1.addEventListener("click", () => {
         mostrarDiv(divFoto1);
     })
@@ -36,6 +34,7 @@ window.onload = () => {
     divFoto4.addEventListener("click", () => {
         mostrarDiv(divFoto4);
     })
+    */
 
     boton_cerrado.addEventListener("click", () => {
         divFoto.style.display = "none";
