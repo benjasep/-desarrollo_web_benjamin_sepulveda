@@ -18,24 +18,6 @@ window.onload = () => {
     })
     }
 
-    /*
-    divFoto1.addEventListener("click", () => {
-        mostrarDiv(divFoto1);
-    })
-    
-    divFoto2.addEventListener("click", () => {
-        mostrarDiv(divFoto2);
-    })
-    
-    divFoto3.addEventListener("click", () => {
-        mostrarDiv(divFoto3);
-    })
-
-    divFoto4.addEventListener("click", () => {
-        mostrarDiv(divFoto4);
-    })
-    */
-
     boton_cerrado.addEventListener("click", () => {
         divFoto.style.display = "none";
     });

@@ -33,7 +33,6 @@
     <th>
       <a href="{{url_for('detallesAdopcion', page=page, detalle=adopt.id)}}"> información completa </a>
     </th>
-    <!--<th> aqui debemos poner el redirect para el id del aviso</th>-->
       </tr>
       {% endfor %}
     </table>
@@ -45,26 +44,28 @@
     <div class="paginacion">
       <div class="retroceso">
       {% if anteriores %}
-      <a href="{{ url_for('listadoAdopciones', page=anteriores[-1:]) }}">ir a la lista anterior</a>
       {% for a in anteriores %}
 
-      <span>
+      <span class="retroceso">
         <a href="{{url_for('listadoAdopciones', page=a ) }}">{{ a }}</a>
       <span>
 
       {% endfor %}
+      <a href="{{ url_for('listadoAdopciones', page=anteriores[-1:]) }}">ir a la lista anterior</a>
       {% endif %}
         </div>
 
       {% if page %}
-      pagina actual: {{ page }}
+      <span class="pagina-actual">pagina actual: {{ page }}</span>
       {% endif %}
+
         <div class="avance">
       {% if siguientes %}
-        <a href="{{ url_for('listadoAdopciones',page=siguientes[0]) }}">ir a la siguiente lista</a>
+      <a href="{{ url_for('listadoAdopciones',page=siguientes[0]) }}">ir a la siguiente lista</a>
+
       {% for sig in siguientes %}
 
-      <span>
+      <span class="avance">
         <a href="{{ url_for('listadoAdopciones', page=sig) }}">{{ sig }}</a>
       <span>
 

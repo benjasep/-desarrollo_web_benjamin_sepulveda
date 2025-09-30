@@ -80,3 +80,35 @@ td a, th a {
 td a:hover, th a:hover {
   background: #1976D2;
 }
+
+.paginacion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 30px auto;
+  font-size: 0.95rem;
+}
+
+.paginacion a {
+  padding: 6px 12px;
+  background: #392bb1;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.paginacion a:hover {
+  background: #d21a1a;
+}
+
+.paginacion .pagina-actual {
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: #212dd3;
+  color: white;
+  font-weight: bold;
+}

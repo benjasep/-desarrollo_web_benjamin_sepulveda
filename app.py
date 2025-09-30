@@ -17,7 +17,6 @@ app.secret_key = "s3cr3t_k3y"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
-
 @app.route('/') # GET
 def index():
     avisos = bd_ORM.getFirst5Avisos(5,0)
@@ -27,10 +26,10 @@ def index():
         j.comuna_id = comunaName
 
         if j.unidad_medida == "m":
-            j.unidad_medida = "meses"
+            j.unidad_medida = "meses" if j.edad > 1 else "mes"
 
         if j.unidad_medida == "a":
-            j.unidad_medida = "años"
+            j.unidad_medida = "años" if j.edad > 1 else "año"
 
     renderizado = render_template("auth/index.html", adopciones=avisos)
     return renderizado
@@ -44,11 +43,11 @@ def listadoAdopciones():
     for j in avisos:
         comunaName = bd_ORM.getNameComunaById(j.comuna_id) 
         j.comuna_id = comunaName
-        if j.unidad_medida == "m":
-            j.unidad_medida = "meses"
+        if j.unidad_medida == "m": 
+            j.unidad_medida = "meses" if j.edad > 1 else "mes"
 
         if j.unidad_medida == "a":
-            j.unidad_medida = "años"
+            j.unidad_medida = "años" if j.edad > 1 else "año"
 
     avisosAll = bd_ORM.getAllAvisos()
     largePaginas = (len(avisosAll) // 5) if len(avisosAll) % 5 != 0 else (len(avisosAll) // 5) - 1
@@ -77,10 +76,22 @@ def detallesAdopcion():
     fotosDetalle = bd_ORM.getFotosByIdAviso(idDetalle)
     infoAviso = bd_ORM.getAvisoById(idDetalle)
 
+    
+    if infoAviso:
+        comunaName = bd_ORM.getNameComunaById(infoAviso.comuna_id) 
+        infoAviso.comuna_id = comunaName
+
+        if infoAviso.unidad_medida == "m":
+            infoAviso.unidad_medida = "meses" if infoAviso.edad > 1 else "mes"
+        if infoAviso.unidad_medida == "a":
+            infoAviso.unidad_medida = "años" if infoAviso.edad > 1 else "año"
+
+
     return render_template("auth/infoplantilla.html",
     adopcion=infoAviso,
     contacto=contactoDetalle,
-    fotos=fotosDetalle
+    fotos=fotosDetalle,
+    page=lastPage
     )
 
 @app.route('/estadisticas')
