@@ -64,12 +64,6 @@ const validateDate = (entregaDate) =>{
     let input = new Date(entregaDate.value);
     let defaultDate = new Date();
     let diference =  (input.getTime() - defaultDate.getTime())/3600000;
-    console.log("input")
-    console.log(input)
-    console.log("defaultDate")
-    console.log(defaultDate)
-    console.log("diference")
-    console.log(diference)
     return  diference >=0;
 };
 
