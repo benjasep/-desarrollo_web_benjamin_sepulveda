@@ -7,11 +7,10 @@
   <body>
     <h1>formulario aviso de adopciones</h1>
     <a href="{{ url_for('index') }}">Volver a la página principal</a>
-    <div class="main-container">
-        <div id="val-box" hidden>
-            <h2 id="val-msg"></h2>
-            <ul id="val-list"></ul>
-        </div>
+    <div id="val-box" hidden>
+      <h2 id="val-msg"></h2>
+      <ul id="val-list"></ul>
+    </div>
       {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     {% for category, mensajes in messages %}
@@ -52,27 +51,23 @@
       <form class="formulario" id="login-form" enctype="multipart/form-data" method="post">
         <div id="region-input" class="grupo-input">
           <label for="region">Región</label>
-          <select id="region" name="region" value="{{ regionInput }}"> 
-            <option value="{{regionInput}}" id="default-region">
+          <select id="region" name="region">
               {% if regionInput %}
-                {{ regionInput }}
+            <option value="{{ regionInput }}" id="default-region" selected>{{ regionInput }}</option>
               {% else %}
-              Seleccione una región
+            <option id="default-region" selected>Seleccione una región</option>
               {% endif %}
-            </option>
           </select>
         </div>
- 
+
         <div id="comuna-input" class="grupo-input">
           <label for="comuna">Comuna</label>
-          <select id="comuna" name="comuna" value="{{comunaInput}}"> 
-            <option value="{{comunaInput}}" id="defult-comuna">
+          <select id="comuna" name="comuna">
               {% if comunaInput %}
-                {{ comunaInput }}
+              <option value="{{ comunaInput }}" id="default-comuna">{{ comunaInput }}</option>
               {% else %}
-              Seleccione una comuna
+              <option id="default-comuna">Seleccione una comuna</option>
               {% endif %}
-            </option>
           </select>
         </div>
 
@@ -98,14 +93,12 @@
 
         <div id="contacto-input" class="grupo-input">
           <label for="contacto">Tipo de contacto</label>
-          <select id="contacto" name="contacto" value="{{contactoInput}}">
-            <option value="{{ contactoInput }}" id="defult-contacto">
+          <select id="contacto" name="contacto">
               {% if contactoInput %}
-                {{ contactoInput }}
+            <option value="{{ contactoInput }}" id="defult-contacto" selected>{{ contactoInput }}</option>
               {% else %}
-              Seleccione red social
+              <option id="defult-contacto" selected>Seleccione red social</option>
               {% endif %}
-            </option>
           </select>
 
           {% if url_contactoInput %}
@@ -148,16 +141,14 @@
       <hr>
 
         <div id="fecha-input" class="grupo-input">
-          <label for="fecha">Indique hora y fecha de entrega, los límites de tiempo para entrega:<br><br>
-          Inicio: 02-09-2025 a las 8:00 hrs<br><br>
-          Término: 02-09-2025 a las 11:00 hrs
+          <label for="fecha">Indique hora y fecha de entrega:<br>
           </label>
-          <input id="fecha" name="fecha" type="datetime-local" value="2025-09-02T08:00:00">
+          <input id="fecha" name="fecha" type="datetime-local" value="">
         </div>
 
         <div id="descripcion-input" class="grupo-input">
           <label for="descripcion">Descripción</label>
-          <textarea id="descripcion" name="descripcion" value="{{descripcionInput}}"></textarea>  
+          <textarea id="descripcion" name="descripcion">{{descripcionInput}}</textarea>  
         </div>
 
         <div id="foto-input" class="grupo-input">
@@ -183,19 +174,18 @@
       </form>
       
       {% if regionesYcomunas %}
-      <script lang="text/javascript">
+      <script>
         let regionesSelection = {{ regionesYcomunas | tojson }};
       </script>
-    <script lang="javascript" src="../../static/javascript/comunasSelector.js"></script>
+    <script src="../../static/javascript/comunasSelector.js"></script>
       {% endif %}
         <div class="botones">
           <button type="button" id="envio">
             mandar formulario
           </button>
         </div>
-    </div>
 
-      <script lang="javascript" src="./../static/javascript/validaciones.js"></script>
+      <script src="./../static/javascript/validaciones.js"></script>
 
   </body>
 </html>

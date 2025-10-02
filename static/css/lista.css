@@ -1,6 +1,6 @@
 body {
   font-family: Arial, sans-serif;
-  background: #f8f9fa;
+  background: #f7f7f7;
   margin: 0;
   padding: 20px;
   color: #333;
@@ -12,103 +12,108 @@ h1 {
   color: #444;
 }
 
-a {
+body > a {
   display: inline-block;
-  margin: 10px 0 20px 0;
-  padding: 8px 14px;
-  background: #392bb1;
+  margin: 8px;
+  padding: 10px 18px;
+  background: #3a20cf;
   color: white;
   text-decoration: none;
-  border-radius: 8px;
-  transition: background 0.3s ease;
+  border-radius: 12px;
+  transition: background 0.2s ease;
 }
 
-a:hover {
-  background: #d21a1a;
+body > a:hover {
+  background: #df3131;
 }
 
 table {
-  width: 95%;
-  margin: 0 auto;
-  border-collapse: collapse;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 20px;
   background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
 }
 
-th {
-  background: #212dd3;
-  color: white;
-  padding: 12px;
+td {
+  padding: 14px;
   text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+/* Primera fila (encabezados) */
+table tr:first-child td {
+  background: #4837e0;
+  color: white;
   font-weight: bold;
 }
 
-td, th {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: center;
+/* Filas de datos clickeables */
+table tr[onclick] {
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-tr:nth-child(even) {
+table tr[onclick]:hover {
   background: #f2f2f2;
-}
-
-tr:hover {
-  background: #e6ffe6;
-  transition: 0.2s;
+  transform: scale(1.02);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1;
 }
 
 td img {
-  width: 90px;
-  height: 90px;
-  border-radius: 12px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+  width: 100px;
+  height: 100px;
   object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease;
 }
 
-td a, th a {
-  padding: 6px 12px;
-  border-radius: 8px;
-  background: #2196F3;
-  color: white;
-  text-decoration: none;
-  transition: background 0.3s ease;
+td img:hover {
+  transform: scale(1.05);
 }
 
-td a:hover, th a:hover {
-  background: #1976D2;
+p {
+  text-align: center;
+  font-size: 18px;
+  color: #666;
+  margin-top: 40px;
 }
 
 .paginacion {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin: 30px auto;
-  font-size: 0.95rem;
+  margin-top: 30px;
+  text-align: center;
+}
+
+.pagina-actual {
+  display: inline-block;
+  margin: 0 20px;
+  padding: 10px 18px;
+  background: #4837e0;
+  color: white;
+  border-radius: 12px;
+  font-weight: bold;
+}
+
+.retroceso, .avance {
+  display: inline-block;
 }
 
 .paginacion a {
-  padding: 6px 12px;
-  background: #392bb1;
+  display: inline-block;
+  margin: 8px;
+  padding: 10px 18px;
+  background: #3a20cf;
   color: white;
   text-decoration: none;
-  border-radius: 6px;
-  transition: background 0.3s ease;
-  font-size: 0.9rem;
+  border-radius: 12px;
+  transition: background 0.2s ease;
 }
 
 .paginacion a:hover {
-  background: #d21a1a;
-}
-
-.paginacion .pagina-actual {
-  padding: 6px 12px;
-  border-radius: 6px;
-  background: #212dd3;
-  color: white;
-  font-weight: bold;
+  background: #df3131;
 }

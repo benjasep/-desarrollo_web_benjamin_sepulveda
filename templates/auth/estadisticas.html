@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
+    <meta charset="UTF-8">
     <title>Estadísticas de adopciones</title>
     <link rel="stylesheet" type="text/css" href="../../static/css/estadistica.css">
-    <a href="{{ url_for('index') }}">Volver a la página principal</a>
   </head>
-    <h1>Estadísticas de adopciones</h1>
   <body>
+    <h1>Estadísticas de adopciones</h1>
 
-    <img src="../../static/fotosEst/grafico1.png" width="500" height="300">
-    <br></br>
-    <img src="../../static/fotosEst/grafico2.png" width="450" height="350">
-    <br></br>
-    <img src="../../static/fotosEst/grafico3.png" width="500" height="350">
-    <br></br>
+    <a href="{{ url_for('index') }}">Volver a la página principal</a>
+
+    <img src="../../static/fotosEst/grafico1.png" width="500" height="300" alt="tendencias de adopciones">
+    <br>
+    <img src="../../static/fotosEst/grafico2.png" width="450" height="350" alt="porcentaje adopciones">
+    <br>
+    <img src="../../static/fotosEst/grafico3.png" width="500" height="350" alt="cantidad total adopciones">
+
   </body>
 </html>

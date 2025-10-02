@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
-    <title>Detalles de adopcion</title>
-    <link rel="stylesheet" type="text/css" href="../static/css/totalInfo.css">
+      <meta charset="UTF-8">
+      <title>Detalles de adopcion</title>
+      <link rel="stylesheet" type="text/css" href="../static/css/totalInfo.css">
   </head>
   <body>
-
     <h1>Detalles de adopción</h1>
     <ul>
       <li>Fecha publicación:{{ adopcion.fecha_ingreso }}</li>
@@ -25,19 +25,19 @@
     {% for f in fotos %}
 
     <div class="foto-info">
-        <img src="/{{ f.ruta_archivo }}" width="240" height="320" class="foto-detalle">
+        <img src="/static/uploads/{{ f.nombre_archivo }}" width="240" height="320" class="foto-detalle" alt="">
     </div>
 
     {% endfor %}
     </div>
 
     <div id="foto-adopcionActual" class="foto-adopcionActual" hidden>
-        <img width="600" height="800">
+        <img src="/static/uploads/{{ fotos[0].nombre_archivo }}" width="600" height="800" alt="">
         <button id="close-foto">X</button>
     </div>
     
     <a href="{{ url_for('listadoAdopciones', page=page )}}">Volver a la lista de adopciones</a>
     <a href="{{ url_for('index')}}">Volver a la portada</a>
-    <script lang="javascript" src="../static/javascript/fotoEspecial.js"></script>
+    <script src="../static/javascript/fotoEspecial.js"></script>
   </body>
 </html>

@@ -212,14 +212,14 @@ def formulario():
         # en caso de que  haya fallado las validaciones
         else:
             if (validacionTotal and not fotosBool):
-                print("fallo inputs e imagenes")
+                #print("fallo inputs e imagenes")
                 validacionTotal = validacionTotal + validacionFotos  
                 flash(validacionTotal, "errorBackendInputsFotos")
             elif not fotosBool:
-                print("fallo imagenes")
+                #print("fallo imagenes")
                 flash(validacionFotos, "errorBackendFotos")
             else:
-                print("fallo en el input")
+                #print("fallo en el input")
                 flash(validacionTotal, "errorBackendInputs")
 
             regionesComunas = bd_ORM.getAllRegionesYComunasJSON()
@@ -242,74 +242,3 @@ def formulario():
 if __name__ == "__main__":
     app.run(debug=True)
 
-'''
-    print("region: ")
-    print(region)
-    print("--------")
-    print("")
-        
-    print("comuna: ")
-    print(comuna)
-    print("--------")
-    print("")
-        
-    print("sector: ")
-    print(sector)
-    print("--------")
-    print("")
-        
-    print("username: ")
-    print(username)
-    print("--------")
-    print("")
-        
-    print("email: ")
-    print(email)
-    print("--------")
-    print("")
-        
-    print("celular: ")
-    print(celular)
-    print("--------")
-    print("")
-        
-    print("contacto: ")
-    print(contacto)
-    print("--------")
-    print("")
-        
-    print("url_contacto: ")
-    print(url_contacto)
-    print("--------")
-    print("")
-        
-    print("animal: ")
-    print(animal)
-    print("--------")
-    print("")
-        
-    print("cantidad: ")
-    print(cantidad)
-    print("--------")
-    print("")
-        
-    print("edad: ")
-    print(edad)
-    print("--------")
-    print("")
-        
-    print("meses anios: ")
-    print(meses_anios)
-    print("--------")
-    print("")
-        
-    print("fecha: ")
-    print(fecha)
-    print("--------")
-    print("")
-        
-    print("descripcion: ")
-    print(descripcion)
-    print("--------")
-    print("")
-'''

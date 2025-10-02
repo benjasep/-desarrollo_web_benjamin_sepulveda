@@ -1,38 +1,37 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
-  <title>Todas las adopciones actuales</title>
+    <meta charset="UTF-8">
+    <title>Todas las adopciones actuales</title>
     <link rel="stylesheet" type="text/css" href="../../static/css/lista.css">
   </head>
-  <h1>Lista de adopciones</h1>
+  
   <body>
+    <h1>Lista de adopciones</h1>
     <a href="{{ url_for('index') }}">Volver a la portada</a>
+
     {% if avisos %}
     <table>
       <tr>
-    <th>Fecha publicación</th>
-    <th>Fecha entrega</th>
-    <th>Comuna</th>
-    <th>Sector</th>
-    <th>Cantidad Tipo edad</th>
-    <th>Nombre Contacto</th>
-    <th>foto</th>
-    <th>información Completa</th>
+    <td>Fecha publicación</td>
+    <td>Fecha entrega</td>
+    <td>Comuna</td>
+    <td>Sector</td>
+    <td>Cantidad Tipo edad</td>
+    <td>Nombre Contacto</td>
+    <td>foto</td>
       </tr>
       {% for adopt in avisos %}
-      <tr>
-    <th>{{ adopt.fecha_ingreso }}</th>
-    <th>{{ adopt.fecha_entrega }}</th>
-    <th>{{ adopt.comuna_id }}</th>
-    <th>{{ adopt.sector }}</th>
-    <th>{{ adopt.cantidad }} {{ adopt.tipo }} {{ adopt.edad }}</th>
-    <th>{{ adopt.nombre }}</th>
-    <th>
-      <img src="/{{ adopt.fotos[0].ruta_archivo }}" width="150" height="150">
-    </th>
-    <th>
-      <a href="{{url_for('detallesAdopcion', page=page, detalle=adopt.id)}}"> información completa </a>
-    </th>
+    <tr onclick="window.location.href= '{{url_for('detallesAdopcion', page=page, detalle=adopt.id)}}'">
+    <td>{{ adopt.fecha_ingreso }}</td>
+    <td>{{ adopt.fecha_entrega }}</td>
+    <td>{{ adopt.comuna_id }}</td>
+    <td>{{ adopt.sector }}</td>
+    <td>{{ adopt.cantidad }} {{ adopt.tipo }}, {{ adopt.edad }} {{adopt.unidad_medida}}</td>
+    <td>{{ adopt.nombre }}</td>
+    <td>
+      <img src="/static/uploads/{{ adopt.fotos[0].nombre_archivo }}" width="150" height="150" alt="">
+    </td>
       </tr>
       {% endfor %}
     </table>
@@ -48,7 +47,7 @@
 
       <span class="retroceso">
         <a href="{{url_for('listadoAdopciones', page=a ) }}">{{ a }}</a>
-      <span>
+      </span>
 
       {% endfor %}
       <a href="{{ url_for('listadoAdopciones', page=anteriores[-1:]) }}">ir a la lista anterior</a>
@@ -67,8 +66,7 @@
 
       <span class="avance">
         <a href="{{ url_for('listadoAdopciones', page=sig) }}">{{ sig }}</a>
-      <span>
-
+      </span>
       {% endfor %}
       {% endif %}
       </div>

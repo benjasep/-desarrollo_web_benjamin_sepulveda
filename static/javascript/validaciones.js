@@ -1,6 +1,6 @@
 const validateRegion = (region) => {
-    return region !=='';
-};
+    return region !=='' && region !=='null' ;
+}; 
 
 const validateComuna = (comuna) =>{
     return comuna !=='';
@@ -46,12 +46,14 @@ const validateTypeAnimal = (selectPerro, selectGato) =>{
 
 const validateCantidad = (cantidad) =>{
     let minValid = cantidad >= 1;
-    return minValid;
+    let noInt = cantidad % 1 === 0; 
+    return minValid && noInt;
 };
 
 const validateEdad = (edad) => {
     let minValid = edad >= 1;
-    return minValid;
+    let noInt = edad % 1 === 0
+    return minValid && noInt;
 };
 
 const validateUnidadEdad = (meses, anios) => {
@@ -60,9 +62,15 @@ return meses.checked || anios.checked;
 
 const validateDate = (entregaDate) =>{
     let input = new Date(entregaDate.value);
-    let defaultDate = new Date("2025-09-02T08:00:00");
+    let defaultDate = new Date();
     let diference =  (input.getTime() - defaultDate.getTime())/3600000;
-    return diference <=3 && diference >=0;
+    console.log("input")
+    console.log(input)
+    console.log("defaultDate")
+    console.log(defaultDate)
+    console.log("diference")
+    console.log(diference)
+    return  diference >=0;
 };
 
 const validateDescription = (descripcion) =>{

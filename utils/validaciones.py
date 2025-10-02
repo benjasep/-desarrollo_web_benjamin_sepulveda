@@ -8,38 +8,10 @@ from database import bd_ORM
 ### validaciones de input ###
 
 def validateRegion(region):
-    '''if region == '' or region == None:
-        return False
-    else:
-        #regiones = bd_ORM.getAllRegionesYComunas()
-        #existe = regiones.filter(u.nombre==region)
-        sesion = bd_ORM.SessionLocal()
-        existe = sesion.query(bd_ORM.Region).filter_by(nombre=region).first()
-        sesion.close()
-        if existe:
-            return True
-        else:
-            return False 
-    '''
     validacion = bd_ORM.validacionRegion(region)
     return validacion
 
 def validateComuna(region, comuna):
-    '''
-    if comuna == '' or comuna == None:
-        return False
-    booleano = bd_ORM.getComunabyRegionName(region, comuna)
-    return booleano
-    #validacionRegion = validateRegion(region)
-    #sesion = bd_ORM.SessionLocal()
-    #existeComuna = sesion.query(Comuna).filter_by(nombre=comuna).first()
-    #print(existeComuna)
-    #print(bd_ORM.getAllComunas[0])
-    #if existeComuna:
-    #    return True
-    #else:
-    #    return False
-    '''
     validacion = bd_ORM.validacionRegionYComuna(region,comuna)
     return validacion
             
@@ -57,8 +29,6 @@ def validateEmail(email):
     largo = len(email) < 100
     regular = re.compile(r"^[\w.]+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$")
     valido = bool(regular.match(email))
-    #print(largo)
-    #print(valido)
     return largo and valido
 
 def validatePhoneNumber(phoneNumber):
@@ -83,13 +53,14 @@ def validateTypeAnimal(select):
 def validateCantidad(cantidad):
     if not cantidad:
         return False
-    booleano = int(cantidad) >=1
+    
+    booleano = float(cantidad) >=1 and float(cantidad) % 1 == 0 
     return booleano
 
 def validateEdad(edad):
     if not edad:
         return False
-    booleano = int(edad) >=1   
+    booleano = float(edad) >=1 and float(edad) % 1 == 0
     return booleano
 
 def validateUnidadEdad(meses_anios):
@@ -99,12 +70,13 @@ def validateUnidadEdad(meses_anios):
     return valido
     
 def validateDate(entregaDate):
+    if not entregaDate:
+        return False   
     inputDate = datetime.strptime(entregaDate, "%Y-%m-%dT%H:%M")
-    defaultDate = datetime.strptime("2025-09-02T08:00", "%Y-%m-%dT%H:%M")
+    defaultDate = datetime.now()
     diference = (inputDate.timestamp() - defaultDate.timestamp())/3600
-    booleano = diference <=3 and diference >=0
+    booleano = diference >=0
     return booleano
-
 
 def validateDescription(descripcion):
     if descripcion == '':

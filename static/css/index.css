@@ -65,3 +65,53 @@ td img {
 td img:hover {
   transform: scale(1.05); 
 }
+
+.alert {
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+  border-left: 4px solid;
+}
+
+.alert.error,
+.alert.errorBackendInputs,
+.alert.errorBackendFotos,
+.alert.errorBackendInputsFotos {
+  background-color: rgb(89, 74, 74);
+  color: #c33;
+  border-left-color: #c33;
+}
+
+.alert.success {
+  background-color: rgb(84, 199, 84);
+  color: #2a7;
+  border-left-color: #2a7;
+}
+
+.alert.info {
+  background-color: rgb(68, 155, 155);
+  color: #17a;
+  border-left-color: #17a;
+}
+
+.alert.warning {
+  background-color: rgb(84, 216, 106);
+  color: rgb(184, 145, 67);
+  border-left-color: #c80;
+}
+
+.alert h2 {
+  margin: 0 0 12px 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.alert ul {
+  margin: 0;
+  padding-left: 25px;
+}
+
+.alert li {
+  padding: 5px 0;
+  line-height: 1.5;
+}

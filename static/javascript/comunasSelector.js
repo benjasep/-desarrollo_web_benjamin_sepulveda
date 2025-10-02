@@ -7,7 +7,7 @@ const regionOption = () =>{
         let newRegion = document.createElement("option");
         newRegion.innerText = R.nombre;
         newRegion.value = R.nombre;
-        regionSelect.appendChild(newRegion)
+        regionSelect.appendChild(newRegion);
     }
 );
 }

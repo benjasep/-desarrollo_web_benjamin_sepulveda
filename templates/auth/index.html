@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
+    <meta charset="UTF-8">
     <title>Portada de página</title>
     <link rel="stylesheet" type="text/css" href="../../static/css/index.css">
   </head>
-  <h1>Inicio de adopciones</h1>
-  <body>
+  <body>    
+    <h1>Inicio de adopciones</h1>
+
     <a href="{{ url_for('estadisticas') }}">Estadísticas</a>
     <a href="{{ url_for('listadoAdopciones', page='1') }}">Ver Listado de adopciones</a>
     <a href="{{ url_for('formulario') }}">Agregar aviso de adopción</a>
-    
+
     {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     {% for category, message in messages %}
@@ -18,13 +20,19 @@
   {% endif %}
 {% endwith %}
 
+  {% if not adopciones %}
+    <div id="no-adopciones">
+      <h2>No hay avisos de adopciones actualmente</h2>  
+    </div>
+    {% endif %}
+
     {% if adopciones %}
     <table>
   <tr>
     <th>Fecha publicación</th>
     <th>Comuna</th>
     <th>Sector</th>
-    <th>Cantidad Tipo <br></br>edad</th>
+    <th>Cantidad Tipo <br>edad</th>
     <th>Foto</th>
   </tr>
     {% for adop in adopciones %}
@@ -33,21 +41,14 @@
     <th>{{ adop.comuna_id }}</th>
     <th>{{ adop.sector }}</th>
     <th>{{ adop.cantidad }} {{ adop.tipo }} 
-      <br></br>{{ adop.edad }} {{ adop.unidad_medida}}
+      <br>{{ adop.edad }} {{ adop.unidad_medida}}
     </th>
     <th>
-      <img src="{{ adop.fotos[0].ruta_archivo }}" width="150" height="150">
+      <img src="/static/uploads/{{ adop.fotos[0].nombre_archivo }}" width="150" height="150" alt="">
     </th>
   </tr>
     {% endfor %}
     </table>
     {% endif %}
-    <!---->
-    {% if not adopciones %}
-    <div id="no-adopciones">
-      <h2>No hay avisos de adopciones actualmente</h2>  
-    </div>
-    {% endif %}
-    <script lang="javascript" src=""></script>
   </body>
 </html>

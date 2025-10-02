@@ -133,17 +133,13 @@ def getAvisoById(id):
 
 def getAllRegionesYComunasJSON():
     sesion = SessionLocal()
-    regiones = sesion.query(Region).all()
-    data = [
-    {
-        "id": r.id,
-        "nombre": r.nombre,
-        "comunas": [{"id": c.id, "nombre": c.nombre} for c in r.comunas]
-    }
-    for r in regiones
-    ]
-    #dataRyC = []
-    #for r in regiones:
+    regiones = sesion.query(Region).options(joinedload(Region.comunas)).all()
+    data = []
+    for r in regiones:
+        dataComuna = []
+        for comuna in r.comunas:
+            dataComuna.append({"id": comuna.id, "nombre": comuna.nombre})
+        data.append({"id": r.id, "nombre": r.nombre, "comunas": dataComuna})
     sesion.close()
     return data
 
@@ -218,8 +214,8 @@ def addAviso(comuna,sector,nombre,email,
             email=email,
             celular=celular,
             tipo=tipo,
-            cantidad=int(cantidad),
-            edad=int(edad),
+            cantidad=float(cantidad),
+            edad=float(edad),
             unidad_medida=unidad_medida,
             fecha_entrega=fecha_entrega,
             descripcion=descripcion
@@ -257,9 +253,9 @@ def addAviso(comuna,sector,nombre,email,
         sesion.commit()
         sesion.close()
         return True
-    except Exception as e: #se supone que aqui nunca deberian 
-        print(type(e))
-        print(e)
-        sesion.rollback() # haber errores
+    except Exception as e: #se supone que aqui nunca deberian haber errores 
+        #print(type(e))
+        #print(e)
+        sesion.rollback() 
         sesion.close()
         return False
