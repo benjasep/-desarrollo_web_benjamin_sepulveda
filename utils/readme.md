@@ -1,0 +1,1 @@
+Solamente está implementado el item de los graficos, lo de los comentarios no hay nada.
