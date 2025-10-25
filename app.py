@@ -98,6 +98,11 @@ def detallesAdopcion():
 def estadisticas():
     return render_template("auth/estadisticas.html")
 
+
+@app.route('/stats')
+def stats():
+    return bd_ORM.getEstadisticasAdopciones()
+
 @app.route('/formulario', methods=["GET", "POST"])
 def formulario():
     if request.method == "GET": 

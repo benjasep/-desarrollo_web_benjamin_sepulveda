@@ -64,7 +64,7 @@ class Aviso_adopcion(Base):
     comuna: Mapped["Comuna"] = relationship(back_populates="avisos")
     fotos: Mapped[list["Foto"]] = relationship(back_populates="aviso")
     contactos: Mapped[list["Contactar_por"]] = relationship(back_populates="aviso")
-
+    comentarios: Mapped[list["comentario"]] = relationship(back_populates="aviso")
 
 class Foto(Base):
     __tablename__ = "foto"
@@ -98,6 +98,22 @@ class Contactar_por(Base):
 
     aviso: Mapped["Aviso_adopcion"] = relationship(back_populates="contactos")
 
+class comentario(Base):
+    __tablename__ = "comentario"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, nullable=False)
+    nombre: Mapped[str] = mapped_column(String(80), nullable=False)
+    contenido: Mapped[str] = mapped_column(String(500), nullable=False)
+    fecha_publicacion: Mapped[datetime.datetime] = mapped_column(
+        nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+    aviso_id: Mapped[int] = mapped_column(
+        ForeignKey("aviso_adopcion.id", ondelete="NO ACTION", onupdate="NO ACTION"),
+        nullable=False,
+        index=True,
+    )
+    aviso: Mapped["Aviso_adopcion"] = relationship(back_populates="comentarios")
+
 
 DB_NAME = "tarea2"
 DB_USERNAME = "cc5002"
@@ -113,6 +129,24 @@ SessionLocal = sessionmaker(bind=engine)
 
 
 # -- query --
+
+def getEstadisticasAdopciones():
+    sesion = SessionLocal()
+    total_avisos = sesion.query(Aviso_adopcion).all()
+    datos_estadisticas = []
+    for aviso in total_avisos:
+            datos_estadisticas.append({
+                'fecha': aviso.fecha_ingreso.strftime('%Y-%m-%d'),
+                'tipo': aviso.tipo,
+                'cantidad': aviso.cantidad,
+                'comuna': aviso.comuna.nombre
+            })
+    sesion.close()
+    return datos_estadisticas
+
+
+
+
 def getAllAvisos():
     sesion = SessionLocal()
     avisos = sesion.query(Aviso_adopcion).options(joinedload(Aviso_adopcion.fotos)).all()
