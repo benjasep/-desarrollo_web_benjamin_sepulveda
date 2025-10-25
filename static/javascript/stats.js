@@ -11,37 +11,44 @@ const getDatos = async () => {
 const procesarDatos1 = (data) => {
     if (!data) return [];
 
-    return Array.from(
-        data.reduce((map, item) => {
-            const fecha = new Date(item.fecha).getTime();
-            return map.set(fecha, (map.get(fecha) || 0) + item.cantidad);
-        }, new Map())
-    )
-    .map(([fecha, cantidad]) => [fecha, cantidad])
+    const acumulado = {};
+    data.forEach(item => {
+        const fecha = new Date(item.fecha).getTime();
+        acumulado[fecha] = (acumulado[fecha] || 0) + item.cantidad; // += item.cantidad 
+    });
+
+    const resultado = [];
+    for (let fecha in acumulado) {
+        resultado.push([parseInt(fecha), acumulado[fecha]]);
+    }
+
+   return resultado;
+
 };
 
 const procesarDatos2 = (data) => {
     if (!data) return [];
-    
-    let perros = 0;
-    let gatos = 0;
+
+    let perrosCantidad = 0;
+    let gatosCantidad = 0;
 
     data.forEach(item => {
         if (item.tipo === 'perro') {
-            perros += item.cantidad;
+            perrosCantidad += item.cantidad;
         } else if (item.tipo === 'gato') {
-            gatos += item.cantidad;
+            gatosCantidad += item.cantidad;
         }
     });
 
     return [
-        { name: 'Perros', y: perros },
-        { name: 'Gatos', y: gatos }
+        { name: 'Perros', y: perrosCantidad },
+        { name: 'Gatos', y: gatosCantidad }
     ];
 };
 
 const procesarDatos3 = (data) => {
     if (!data) return [];
+    
     const datosPorMes = data.reduce((acc, item) => {
         const fecha = new Date(item.fecha);
         const mes = fecha.toLocaleString('es-ES', { month: 'long' });
@@ -56,9 +63,15 @@ const procesarDatos3 = (data) => {
         return acc;
     }, {});
 
-    const meses = Object.keys(datosPorMes);
-    const perros = meses.map(mes => datosPorMes[mes].perros);
-    const gatos = meses.map(mes => datosPorMes[mes].gatos);
+    const meses = [];
+    const perros = [];
+    const gatos = [];
+
+    for (let mes in datosPorMes) {
+        meses.push(mes);
+        perros.push(datosPorMes[mes].perros);
+        gatos.push(datosPorMes[mes].gatos);
+    }
 
     return {
         categorias: meses,
@@ -164,7 +177,7 @@ const crearGrafico2 = async () => {
     } catch (error) {
         console.error('Error al crear el gráfico:', error);
     }
-};      
+};
 
 const crearGrafico3 = async () => {
     try {
@@ -221,7 +234,6 @@ const crearGrafico3 = async () => {
         console.error('Error al crear el gráfico:', error);
     }
 };
-
 
 
 crearGrafico1();

@@ -1,46 +1,4 @@
-/*let formulario = document.getElementById("comment-form");
-
-const validateName = (name) => {
-    return name.length >= 3 && name.length <= 80;
-}
-
-const validateComentario = (comentario) => {
-    return comentario.length >= 10 && comentario.length <= 500;
-}
-
-const mainFunction = () => {
-    let errorMessages = [];
-    let UlError = document.getElementById("error-form-comentario");
-    UlError.innerHTML = "";  // Limpiar mensajes de error anteriores
-
-    let name = document.getElementById("nombre").value;
-    let comentario = document.getElementById("comentario").value;
-
-    if (!validateName(name)) {
-        let errorName = document.createElement("li");
-        errorName.textContent = "Nombre inválido";
-        UlError.appendChild(errorName);
-        return false;
-    }
-
-    if (!validateComentario(comentario)) {
-        let errorComment = document.createElement("li");
-        errorComment.textContent = "Comentario inválido";
-        UlError.appendChild(errorComment);
-        return false;
-    }
-
-
-
-}
-
-formulario.addEventListener("submit", (event) => {
-    mainFunction();
-});
-*/
-
-const postComment = (event) => {  // peticion para enviar comentario
-    event.preventDefault();  // Prevenir el comportamiento por defecto del formulario
+const postComment = () => {  
 
     
     const validateName = (name) => {
@@ -66,7 +24,7 @@ const postComment = (event) => {  // peticion para enviar comentario
     }
 
     if (errores.length === 0) {
-    let req = fetch(`${window.origin}/comments`, {  // recordar poner la ruta real
+    let req = fetch(`${window.origin}/comments`, {  
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -75,8 +33,7 @@ const postComment = (event) => {  // peticion para enviar comentario
     })
     .then(response => response.json())
     .then(data => {
-        //console.log('Comentario enviado:', data);
-        getComments();  // Actualizar la lista de comentarios
+        getComments();  
     })
     .catch(error => {
         let error = document.getElementById("error-form-comentario");
@@ -85,7 +42,7 @@ const postComment = (event) => {  // peticion para enviar comentario
     });
 } else {
     let errorList = document.getElementById("error-list");
-    errorList.innerHTML = "";  // Limpiar mensajes de error anteriores}
+    errorList.innerHTML = "";  
     errores.forEach(error => {
         let li = document.createElement("li");
         li.textContent = error;
@@ -93,13 +50,13 @@ const postComment = (event) => {  // peticion para enviar comentario
     });
 }}
 
-const getComments = () => { // peticion para obtener comentarios y actualizar en el html
-    let req = fetch(`${window.origin}/comments`)  // recordar poner la ruta real
+const getComments = () => { 
+    let req = fetch(`${window.origin}/comments`)  
         .then(response => response.json())
         .then(data => {
             let commentsList = document.getElementById("comments-list");
             let divComment = document.getElementById("hilo-comments");
-            commentsList.innerHTML = "";  // Limpiar lista de comentarios
+            commentsList.innerHTML = "";  
 
             if (data.length === 0) {
                 let noCommentsMsg = document.createElement("p");
