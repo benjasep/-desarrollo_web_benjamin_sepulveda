@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de adopciones</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+<body>
+<h1>Listado de adopciones</h1>
+
+<p id="error" style="display:none; color: red; background-color: yellow; padding: 10px;"></p>
+<p id="mensaje" style="display:none; background-color: lightgreen; padding: 10px;"></p>
+
+<div id="listaAvisos" style="display:none;">
+    <h2>Los avisos en cuestión: </h2>
+        <table id="tablaAvisos">
+        </table>
+</div>
+    <script th:src="@{/js/poblar.js}">
+    </script>
+
+    <script>getData();</script>
+</body>
+</html>
